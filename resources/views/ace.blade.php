@@ -1,65 +1,76 @@
+@extends('layouts.app')
 
-    @extends('layouts.app')
-
-    @section('container')
-        
-    <div class="w-full text-white text-[22px] bg-zinc-800 font-bold p-4 sticky top-0 border-gray-800 border-b" style="background-color: #161B22">
-        {{-- Page Tittle --}} Home
+@section('container')
+    <!-- Page Header -->
+    <div class="w-full text-white text-[22px] font-bold p-4 sticky top-0 border-b border-gray-800 bg-zinc-800" style="background-color: #161B22;">
+        Home
     </div>
-    <div class="border-gray-800 border-b w-full px-4 py-3">
+
+    <!-- Tweet Form -->
+    <div class="border-b border-gray-800 w-full">
         <div class="flex items-start space-x-2 px-1">
+            <!-- User Avatar -->
             <div class="flex-shrink-0">
-                <img class="w-11 h-11 rounded-full object-cover" src="/imgs/testimg.jpg" alt="Neil image">
+                <img class="w-11 h-11 rounded-full object-cover" src="/imgs/testimg.jpg" alt="User Avatar">
             </div>
+            <!-- Form -->
             <div class="flex-1 min-w-0">
-                <form action="{{ url('/dashboard') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ url('/dashboard') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="w-full">
-                            <div class="px-1 py-2 rounded-t-lg">
-                                <label for="tweet" class="sr-only">Your comment</label>
-                                <textarea id="tweet" name="tweet" rows="3" class="resize-none w-full px-0 text-md text-gray-900 border-0 bg-transparent focus:ring-0 dark:text-white dark:placeholder-gray-400" placeholder="What's funny now?" required></textarea>
+                        <div class="px-1 py-2 rounded-t-lg">
+                            <label for="tweet" class="sr-only">What's funny now?</label>
+                            <textarea 
+                                id="tweet" 
+                                name="tweet" 
+                                rows="2" 
+                                oninput="autoResize(this)" 
+                                class="resize-none w-full px-0 text-xl text-gray-900 border-0 bg-transparent focus:ring-0 dark:text-white dark:placeholder-gray-400" 
+                                placeholder="What's funny now?" 
+                                required
+                            ></textarea>
+                        </div>
+                        <div class="flex items-center justify-between py-2 border-t border-gray-800 dark:border-gray-600">
+                            <div class="flex space-x-1">
+                                <!-- File Upload Icon -->
+                                <input type="file" id="file-input" class="hidden">
+                                <label for="file-input" class="cursor-pointer">
+                                    <i class="fas fa-upload text-amber-300 text-xl"></i>
+                                </label>
                             </div>
-                            <div class="flex items-center justify-between py-2 border-t dark:border-gray-600">
-                                <div class="flex space-x-1">
-                                    {{-- <button type="button" class="inline-flex justify-center text-gray-500 rounded cursor-pointer hover:text-gray-900 dark:text-gray-400 dark:hover:text-white ">
-                                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path></svg>
-                                        <span class="sr-only">Attach file</span>
-                                    </button> --}}
-
-                                    <input class="block text-sm text-gray-900 border border-amber-300 rounded-md cursor-pointer bg-amber-300 dark:text-gray-800 focus:outline-none dark:bg-amber-300 dark:border-amber-600 dark:placeholder-amber-800" id="file_input" name="file" type="file">
-                                    {{-- <button type="button" class="inline-flex justify-center text-gray-500 rounded cursor-pointer hover:text-gray-900 dark:text-gray-400 dark:hover:text-white ">
-                                        <i class="fa-solid fa-image" style="color: #ffffff;"></i>
-                                    </button> --}}
-                                </div>
-                                <div class="flex space-x-1">
-                                    <button type="submit" class="inline-flex items-center py-1 px-4 text-sm font-medium text-center text-gray-800 bg-amber-300 rounded-full hover:bg-amber-500">
-                                        Pop
-                                    </button>
-                                <</div>
+                            <div class="flex space-x-1">
+                                <!-- Custom Button -->
+                                <x-cus-button class="mb-4">
+                                    {{ __('Pop') }}
+                                </x-cus-button>
                             </div>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-        <div class="mt-1">
-                    {{-- Main Column --}}
-                    @foreach (App\Models\Pops::all()->shuffle() as $pop)
-                    <div class="space-y-3 px-16 py-5 border-b border-gray-800">
-                        <div class="flex items-center space-x-4 px-1">
-                            <div class="flex-shrink-0">
-                                <img class="w-11 h-11 rounded-full object-cover" src="{{ asset('storage/'.App\Models\User::find($pop->user_id)->avatar) }}" alt="Neil image">
-                            </div>
-                            <div class="flex-1 min-w-0">
+
+    <!-- Pops List -->
+        @foreach (App\Models\Pops::all()->shuffle() as $pop)
+            <div class="flex p-4 border-b border-gray-800">
+                <!-- User Avatar -->
+
+                     <img class="mr-2 w-11 h-11 rounded-full object-cover" src="{{ asset('storage/'.App\Models\User::find($pop->user_id)->avatar) }}" alt="User Avatar">
+                <div class="w-full">
+                    <div class="flex items-center justify-between">
+                        <!-- User Info -->
+                            <div class="flex">
                                 <p class="text-md font-medium text-white truncate dark:text-white">
                                     {{ App\Models\User::find($pop->user_id)->name }}
                                 </p>
-                                <p class="text-sm text-gray-500 truncate dark:text-gray-400">
-                                    {{ App\Models\User::find($pop->user_id)->handle }}
+                                <p class="text-md text-gray-500 truncate dark:text-gray-400">
+                                    {{ '@' . App\Models\User::find($pop->user_id)->handle }}
                                 </p>
                             </div>
-                            <div class="inline-flex px-1 items-center text-base font-semibold text-gray-900 dark:text-white">
-                                <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal" class="inline-flex items-center p-1 text-sm font-medium text-center text-gray-900 rounded-full hover:bg-gray-600 dark:text-white dark:hover:bg-gray-700 " type="button"> 
+
+                        <!-- More Options Button -->
+                        <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal" class="inline-flex items-center p-1 text-sm font-medium text-center text-gray-900 rounded-full hover:bg-gray-600 dark:text-white dark:hover:bg-gray-700 " type="button"> 
                                     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"></path></svg>
                                 </button>
                                   <!-- Dropdown menu -->
@@ -76,39 +87,49 @@
                                         </li>
                                     </ul>
                                   </div>
-                            </div>
-                        </div>
+                    </div>
+
+                    <!-- Tweet Content -->
+                    <div class="">
+                        <p class="font-light text-white dark:text-white">{{ $pop->tweet }}</p>
+                    </div>
+
+                    <div class="mt-4">
                         
-                        <div class="pl-2">
-                            <p class="font-light text-white dark:text-white ">{{ $pop->tweet }}</p>
-                        </div>
-
+                        <!-- Media -->
                         @if ($pop->file)
-                            @if (pathinfo($pop->file, PATHINFO_EXTENSION) === 'mp4')
-                                <video class="h-auto w-full rounded-xl" controls>
-                                    <source src="{{ asset('storage/'.$pop->file) }}" type="video/mp4">
-                                </video>
-                            @else   
-                                <img class="h-auto w-full rounded-xl" src="{{ asset('storage/'.$pop->file) }}" alt="image description">
-                            @endif
+                        @if (pathinfo($pop->file, PATHINFO_EXTENSION) === 'mp4')
+                        <video class="max-h-96 w-full rounded-xl border border-gray-800" controls>
+                            <source src="{{ asset('storage/'.$pop->file) }}" type="video/mp4">
+                        </video>
+                        @else   
+                        <img class="max-h-96 w-full rounded-xl border border-gray-800" src="{{ asset('storage/'.$pop->file) }}" alt="Post Media">
                         @endif
+                        @endif
+                    </div>
 
-                        <div class="flex items-center space-x-4 px-1">    
-                        <div>   
+                    <!-- Actions -->
+                    <div class="flex items-center space-x-4 px-1">    
+                        <div>
                             @if ($pop->is_fav === 'false')
-                            <a href="/dashboard/fav{{$pop->id}}">
-                                <i class="fa-regular fa-star text-md" style="color: #ffffff;"></i>
-                            </a>
-                            @else                            
-                            <a href="/dashboard/des{{$pop->id}}">
-                                <i class="fa-solid fa-star text-md" style="color: #ffffff;"></i>
-                            </a>
+                                <a href="/dashboard/fav{{ $pop->id }}">
+                                    <i class="fa-regular fa-star text-md text-white"></i>
+                                </a>
+                            @else
+                                <a href="/dashboard/des{{ $pop->id }}">
+                                    <i class="fa-solid fa-star text-md text-white"></i>
+                                </a>
                             @endif
-                        </div>
                         </div>
                     </div>
-                    @endforeach
-                    
                 </div>
+            </div>
+        @endforeach
+@endsection
 
-                @endsection
+<script>
+    function autoResize(textarea) {
+        textarea.style.height = 'auto'; // Reset height
+        textarea.style.height = (textarea.scrollHeight) + 'px'; // Set new height based on content
+    }
+</script>
